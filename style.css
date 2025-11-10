@@ -166,7 +166,7 @@ select {
 .nav-container {
   display: flex;
   justify-content: space-between;
- -items: center;
+  align-items: center;
   max-width: 900px;
   margin: auto;
   position: relative;
