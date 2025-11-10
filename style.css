@@ -1,6 +1,15 @@
-/* ===== General Styles ===== */
+
+/* ===== CSS Reset & Base ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
   background: #f4f4f4;
   margin: 0;
   padding: 20px;
@@ -29,6 +38,10 @@ h1 {
   margin-top: 30px;
 }
 
+.mt-30 {
+  margin-top: 30px;
+}
+
 /* ===== Buttons & Inputs ===== */
 .toggle-button {
   display: block;
@@ -39,6 +52,13 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover,
+.toggle-button:focus {
+  background-color: #45a049;
+  outline: none;
 }
 
 label {
@@ -64,7 +84,8 @@ select {
   font-family: sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
-  overflow: hidden;
+  overflow-x: auto;
+  display: block;
 }
 
 .styled-table thead tr {
@@ -82,7 +103,7 @@ select {
   background-color: #f3f3f3;
 }
 
-yled-table tbody tr.active-row {
+.styled-table tbody tr.active-row {
   font-weight: bold;
   color: #009879;
 }
@@ -122,3 +143,12 @@ yled-table tbody tr.active-row {
   background: #e6f4ea;
   border-left: 5px solid #4caf50;
 }
+
+/* ===== Color Variables (Optional for Theming) ===== */
+:root {
+  --primary-color: #4caf50;
+  --warning-bg: #fff3cd;
+  --warning-border: #ffc107;
+  --recommendation-bg: #e6f4ea;
+  --recommendation-border: #4caf50;
+}  
