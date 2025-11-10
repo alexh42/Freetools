@@ -1,14 +1,6 @@
-/* ===== CSS Reset & Base ===== */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
+/* ===== General Styles ===== */
 body {
   font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
   background: #f4f4f4;
   margin: 0;
   padding: 20px;
@@ -37,48 +29,25 @@ h1 {
   margin-top: 30px;
 }
 
-.mt-30 {
-  margin-top: 30px;
-}
-
 /* ===== Buttons & Inputs ===== */
-/* Use CSS variables for theming */
-:root {
-  --primary-color: #4caf50;
-  --warning-bg: #fff3cd;
-  --warning-border: #ffc107;
-  --recommendation-bg: #e6f4ea;
-  --recommendation-border: #4caf50;
-  --muted-text: #555;
-  --text-dark: #333;
-}
-
-/* Primary button */
 .toggle-button {
   display: block;
   margin: 0 auto 20px;
   padding: 10px 20px;
-  background: var(--primary-color);
+  background: #4caf50;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.toggle-button:hover,
-.toggle-button:focus {
-  background-color: color-mix(in srgb, var(--primary-color) 75%, black 25%);
-  outline: none;
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
-/* Only style text-like inputs and selects (avoid styling checkboxes/radios or hidden inputs) */
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="password"],
-input[type="search"],
-textarea,
+input,
 select {
   width: 100%;
   padding: 8px;
@@ -87,15 +56,6 @@ select {
 }
 
 /* ===== Table Styles ===== */
-/* For responsive tables: wrap your table in a .table-responsive element in the HTML:
-   <div class="table-responsive"><table class="styled-table">...</table></div>
-*/
-.table-responsive {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Keep table as a table element to preserve semantics and border-radius behavior */
 .styled-table {
   border-collapse: collapse;
   width: 100%;
@@ -104,11 +64,11 @@ select {
   font-family: sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
-  /* overflow should be handled by .table-responsive wrapper to preserve rounded corners */
+  overflow: hidden;
 }
 
 .styled-table thead tr {
-  background-color: var(--primary-color);
+  background-color: #009879;
   color: #ffffff;
   text-align: left;
 }
@@ -122,9 +82,9 @@ select {
   background-color: #f3f3f3;
 }
 
-.styled-table tbody tr.active-row {
+yled-table tbody tr.active-row {
   font-weight: bold;
-  color: var(--primary-color);
+  color: #009879;
 }
 
 /* ===== Metric Styles ===== */
@@ -135,13 +95,13 @@ select {
 .metric-value {
   font-size: 1.4em;
   font-weight: bold;
-  color: var(--text-dark);
+  color: #333;
 }
 
 .explanation {
   font-size: 0.85em;
   font-style: italic;
-  color: var(--muted-text);
+  color: #555;
   font-weight: normal;
 }
 
@@ -154,186 +114,11 @@ select {
 }
 
 .warning {
-  background: var(--warning-bg);
-  border-left: 5px solid var(--warning-border);
+  background: #fff3cd;
+  border-left: 5px solid #ffc107;
 }
 
 .recommendation {
-  background: var(--recommendation-bg);
-  border-left: 5px solid var(--recommendation-border);
+  background: #e6f4ea;
+  border-left: 5px solid #4caf50;
 }
-
-/* ===== Navigation Bar ===== */
-.navbar {
-  position: sticky;
-  top: 0;
-  background-color: #ffffff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  z-index: 1000;
-  padding: 10px 20px;
-}
-
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 900px;
-  margin: auto;
-  position: relative;
-}
-
-.nav-logo {
-  font-weight: bold;
-  font-size: 1.2em;
-  color: var(--primary-color);
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-links li a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.nav-links li a:hover,
-.nav-links li a:focus {
-  color: var(--primary-color);
-}
-
-/* ===== Burger Menu (No JS) ===== */
-/* Make the checkbox accessible but visually hidden (don't use display:none) */
-.nav-toggle {
-  position: absolute;
-  left: -9999px;
-  /* keep it focusable and operable by keyboard/label */
-}
-
-/* The label that will act as the burger toggle */
-.nav-toggle-label {
-  display: none;
-  font-size: 1.5em;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* ===== Responsive Styles ===== */
-@media (max-width: 768px) {
-  .nav-toggle-label {
-    display: block;
-  }
-
-  .nav-links {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #ffffff;
-    flex-direction: column;
-    width: 200px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-radius: 5px;
-    padding: 10px;
-    display: none;
-  }
-
-  /* Use general sibling selector so label/input positioning is flexible:
-     place the input (nav-toggle) anywhere before .nav-container as a sibling
-     Example markup:
-     <input id="nav-toggle" class="nav-toggle" type="checkbox">
-     <label for="nav-toggle" class="nav-toggle-label">☰</label>
-     <div class="nav-container"> ... </div>
-  */
-  .nav-toggle:checked ~ .nav-container .nav-links {
-    display: flex;
-  }
-
-  /* Slightly improve focus visibility for accessibility */
-  .nav-toggle-label:focus,
-  .nav-toggle-label:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--primary-color) 70%, black 30%);
-    outline-offset: 2px;
-  }
-}
-
-/* Small accessibility and interaction improvements */
-a:focus,
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid color-mix(in srgb, var(--primary-color) 70%, black 30%);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* --- Nav: make the top menu full width --- */
-.nav-container {
-  max-width: 100% !important;
-  width: 100% !important;
-  margin: 0;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: var(--nav-background, #fff);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-}
-
-/* ensure nav links spread correctly */
-.nav-container .nav-links,
-.nav-links {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-/* --- Restore styled table appearance (explicit, higher specificity) --- */
-.styled-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 20px 0;
-  font-size: 0.95rem;
-  font-family: inherit;
-  min-width: 320px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-  border-radius: 6px;
-  overflow: hidden;
-  background: #fff;
-}
-
-.styled-table thead tr {
-  background-color: var(--primary-color, #4caf50);
-  color: #ffffff;
-  text-align: left;
-  font-weight: 600;
-}
-
-.styled-table th,
-.styled-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #e6e6e6;
-}
-
-.styled-table tbody tr:nth-of-type(even) {
-  background-color: #f7f7f7;
-}
-
-.styled-table tbody tr:last-of-type td {
-  border-bottom: 0;
-}
-
-/* page-specific specificity — if calculator.html wraps the content in a #calculator or .calculator-page,
-   uncomment or adjust the selector below to ensure overrides on that page only:
-#calculator .styled-table,
-.calculator-page .styled-table {
-  /* same styles above if needed */
-}
-*/
