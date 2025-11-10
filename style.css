@@ -1,4 +1,3 @@
-
 /* ===== CSS Reset & Base ===== */
 *,
 *::before,
@@ -43,11 +42,23 @@ h1 {
 }
 
 /* ===== Buttons & Inputs ===== */
+/* Use CSS variables for theming */
+:root {
+  --primary-color: #4caf50;
+  --warning-bg: #fff3cd;
+  --warning-border: #ffc107;
+  --recommendation-bg: #e6f4ea;
+  --recommendation-border: #4caf50;
+  --muted-text: #555;
+  --text-dark: #333;
+}
+
+/* Primary button */
 .toggle-button {
   display: block;
   margin: 0 auto 20px;
   padding: 10px 20px;
-  background: #4caf50;
+  background: var(--primary-color);
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -57,17 +68,17 @@ h1 {
 
 .toggle-button:hover,
 .toggle-button:focus {
-  background-color: #45a049;
+  background-color: color-mix(in srgb, var(--primary-color) 75%, black 25%);
   outline: none;
 }
 
-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: bold;
-}
-
-input,
+/* Only style text-like inputs and selects (avoid styling checkboxes/radios or hidden inputs) */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+textarea,
 select {
   width: 100%;
   padding: 8px;
@@ -76,6 +87,15 @@ select {
 }
 
 /* ===== Table Styles ===== */
+/* For responsive tables: wrap your table in a .table-responsive element in the HTML:
+   <div class="table-responsive"><table class="styled-table">...</table></div>
+*/
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Keep table as a table element to preserve semantics and border-radius behavior */
 .styled-table {
   border-collapse: collapse;
   width: 100%;
@@ -84,12 +104,11 @@ select {
   font-family: sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
-  overflow-x: auto;
-  display: block;
+  /* overflow should be handled by .table-responsive wrapper to preserve rounded corners */
 }
 
 .styled-table thead tr {
-  background-color: #009879;
+  background-color: var(--primary-color);
   color: #ffffff;
   text-align: left;
 }
@@ -105,7 +124,7 @@ select {
 
 .styled-table tbody tr.active-row {
   font-weight: bold;
-  color: #009879;
+  color: var(--primary-color);
 }
 
 /* ===== Metric Styles ===== */
@@ -116,13 +135,13 @@ select {
 .metric-value {
   font-size: 1.4em;
   font-weight: bold;
-  color: #333;
+  color: var(--text-dark);
 }
 
 .explanation {
   font-size: 0.85em;
   font-style: italic;
-  color: #555;
+  color: var(--muted-text);
   font-weight: normal;
 }
 
@@ -135,23 +154,14 @@ select {
 }
 
 .warning {
-  background: #fff3cd;
-  border-left: 5px solid #ffc107;
+  background: var(--warning-bg);
+  border-left: 5px solid var(--warning-border);
 }
 
 .recommendation {
-  background: #e6f4ea;
-  border-left: 5px solid #4caf50;
+  background: var(--recommendation-bg);
+  border-left: 5px solid var(--recommendation-border);
 }
-
-/* ===== Color Variables (Optional for Theming) ===== */
-:root {
-  --primary-color: #4caf50;
-  --warning-bg: #fff3cd;
-  --warning-border: #ffc107;
-  --recommendation-bg: #e6f4ea;
-  --recommendation-border: #4caf50;
-}  
 
 /* ===== Navigation Bar ===== */
 .navbar {
@@ -175,7 +185,7 @@ select {
 .nav-logo {
   font-weight: bold;
   font-size: 1.2em;
-  color: #4caf50;
+  color: var(--primary-color);
 }
 
 .nav-links {
@@ -193,19 +203,25 @@ select {
   transition: color 0.3s ease;
 }
 
-.nav-links li a:hover {
-  color: #4caf50;
+.nav-links li a:hover,
+.nav-links li a:focus {
+  color: var(--primary-color);
 }
 
 /* ===== Burger Menu (No JS) ===== */
+/* Make the checkbox accessible but visually hidden (don't use display:none) */
 .nav-toggle {
-  display: none;
+  position: absolute;
+  left: -9999px;
+  /* keep it focusable and operable by keyboard/label */
 }
 
+/* The label that will act as the burger toggle */
 .nav-toggle-label {
   display: none;
   font-size: 1.5em;
   cursor: pointer;
+  user-select: none;
 }
 
 /* ===== Responsive Styles ===== */
@@ -227,7 +243,32 @@ select {
     display: none;
   }
 
-  .nav-toggle:checked + .nav-container .nav-links {
+  /* Use general sibling selector so label/input positioning is flexible:
+     place the input (nav-toggle) anywhere before .nav-container as a sibling
+     Example markup:
+     <input id="nav-toggle" class="nav-toggle" type="checkbox">
+     <label for="nav-toggle" class="nav-toggle-label">☰</label>
+     <div class="nav-container"> ... </div>
+  */
+  .nav-toggle:checked ~ .nav-container .nav-links {
     display: flex;
   }
+
+  /* Slightly improve focus visibility for accessibility */
+  .nav-toggle-label:focus,
+  .nav-toggle-label:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--primary-color) 70%, black 30%);
+    outline-offset: 2px;
+  }
+}
+
+/* Small accessibility and interaction improvements */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--primary-color) 70%, black 30%);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
