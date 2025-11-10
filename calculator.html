@@ -15,123 +15,130 @@
 <body>
   <h1>Campaign Planner Calculator</h1>
 
-  <div class="container">
-    <button type="button" class="toggle-button" aria-controls="section-1" aria-expanded="true" onclick="toggleForm()">Hide Inputs</button>
+  <div class="layout">
+    <button type="button" class="btn btn--toggle" aria-controls="panel-form" aria-expanded="true" onclick="toggleForm()">Hide Inputs</button>
 
-    <div id="section-1" class="form-section">
-      <form id="form-1" onsubmit="return false;">
-        <label for="input-1">Budget (€):</label>
-        <input type="number" id="input-1" name="budget" min="0" step="0.01" placeholder="e.g. 1000" />
+    <section id="panel-form" class="panel panel--form" role="region" aria-labelledby="panel-form-heading">
+      <h2 id="panel-form-heading" class="panel__heading">Inputs</h2>
 
-        <label for="input-2">Campaign Goal:</label>
-        <select id="input-2" name="goal">
+      <form id="form-campaign" class="form" onsubmit="return false;">
+        <label for="budget-input">Budget (€):</label>
+        <input type="number" id="budget-input" name="budget" min="0" step="0.01" placeholder="e.g. 1000" />
+
+        <label for="goal-select">Campaign Goal:</label>
+        <select id="goal-select" name="goal">
           <option value="0.59" data-ctr="0.001">Brand Awareness (CPM = 0.59€)</option>
           <option value="1.12" data-ctr="0.0157">Traffic (CPM = 1.12€)</option>
           <option value="3.83" data-ctr="0.0104">Purchase (CPM = 3.83€)</option>
           <option value="5.39" data-ctr="0.0039">Video Views (CPM = 5.39€)</option>
         </select>
 
-        <label for="input-3">Estimated Audience Size:</label>
-        <input type="number" id="input-3" name="audience" value="100000" min="1" step="1" />
+        <label for="audience-input">Estimated Audience Size:</label>
+        <input type="number" id="audience-input" name="audience" value="100000" min="1" step="1" />
 
-        <label for="input-4">Campaign Duration (days):</label>
-        <input type="number" id="input-4" name="duration" min="0" step="1" placeholder="e.g. 30" />
+        <label for="duration-input">Campaign Duration (days):</label>
+        <input type="number" id="duration-input" name="duration" min="0" step="1" placeholder="e.g. 30" />
 
-        <label for="input-5">Number of Ad Sets:</label>
-        <input type="number" id="input-5" name="adsets" min="0" step="1" value="0" />
+        <label for="adsets-input">Number of Ad Sets:</label>
+        <input type="number" id="adsets-input" name="adsets" min="0" step="1" value="0" />
 
-        <label for="input-6">Number of Ads per Ad Set:</label>
-        <input type="number" id="input-6" name="adsPerSet" min="0" step="1" value="0" />
+        <label for="adsperset-input">Number of Ads per Ad Set:</label>
+        <input type="number" id="adsperset-input" name="adsPerSet" min="0" step="1" value="0" />
       </form>
-    </div>
+    </section>
 
-    <table class="styled-table">
-      <thead>
-        <tr>
-          <th>Metric</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <span class="metric-label">Budget for the Period</span><br />
-            <span class="explanation">Total amount you'll spend during the campaign.</span>
-          </td>
-          <td class="metric-value" id="metric-1">—</td>
-        </tr>
-        <tr>
-          <td>
-            <span class="metric-label">Daily Budget</span><br />
-            <span class="explanation">How much you spend each day.</span>
-          </td>
-          <td class="metric-value" id="metric-2">—</td>
-        </tr>
-        <tr>
-          <td>
-            <span class="metric-label">Daily Budget per Ad</span><br />
-            <span class="explanation">How much each ad gets per day.</span>
-          </td>
-          <td class="metric-value" id="metric-3">—</td>
-        </tr>
-        <tr>
-          <td>
-            <span class="metric-label">Estimated Total Impressions</span><br />
-            <span class="explanation">How many times your ads might be seen in total.</span>
-          </td>
-          <td class="metric-value" id="metric-4">—</td>
-        </tr>
-        <tr>
-          <td>
-            <span class="metric-label">Average Repetition</span><br />
-            <span class="explanation">How many times a person might see an ad during the entire campaign.</span>
-          </td>
-          <td class="metric-value" id="metric-5">—</td>
-        </tr>
-        <tr>
-          <td>
-            <span class="metric-label">Daily Repetition</span><br />
-            <span class="explanation">How many times a person might see an ad per day.</span>
-          </td>
-          <td class="metric-value" id="metric-6">—</td>
-        </tr>
-        <tr>
-          <td>
-            <span class="metric-label">Estimated Traffic</span><br />
-            <span class="explanation">How many people might click or engage based on the campaign goal.</span>
-          </td>
-          <td class="metric-value" id="metric-7">—</td>
-        </tr>
-      </tbody>
-    </table>
+    <section id="panel-metrics" class="panel panel--metrics" role="region" aria-labelledby="panel-metrics-heading">
+      <h2 id="panel-metrics-heading" class="panel__heading">Metrics</h2>
 
-    <div id="tips-1" class="tips" aria-live="polite"></div>
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="metrics__row">
+            <td>
+              <span class="metric__label">Budget for the Period</span><br />
+              <span class="metric__explanation">Total amount you'll spend during the campaign.</span>
+            </td>
+            <td class="metric__value" id="metric-budget">—</td>
+          </tr>
+          <tr class="metrics__row">
+            <td>
+              <span class="metric__label">Daily Budget</span><br />
+              <span class="metric__explanation">How much you spend each day.</span>
+            </td>
+            <td class="metric__value" id="metric-daily">—</td>
+          </tr>
+          <tr class="metrics__row">
+            <td>
+              <span class="metric__label">Daily Budget per Ad</span><br />
+              <span class="metric__explanation">How much each ad gets per day.</span>
+            </td>
+            <td class="metric__value" id="metric-per-ad">—</td>
+          </tr>
+          <tr class="metrics__row">
+            <td>
+              <span class="metric__label">Estimated Total Impressions</span><br />
+              <span class="metric__explanation">How many times your ads might be seen in total.</span>
+            </td>
+            <td class="metric__value" id="metric-impressions">—</td>
+          </tr>
+          <tr class="metrics__row">
+            <td>
+              <span class="metric__label">Average Repetition</span><br />
+              <span class="metric__explanation">How many times a person might see an ad during the entire campaign.</span>
+            </td>
+            <td class="metric__value" id="metric-avg-rep">—</td>
+          </tr>
+          <tr class="metrics__row">
+            <td>
+              <span class="metric__label">Daily Repetition</span><br />
+              <span class="metric__explanation">How many times a person might see an ad per day.</span>
+            </td>
+            <td class="metric__value" id="metric-daily-rep">—</td>
+          </tr>
+          <tr class="metrics__row">
+            <td>
+              <span class="metric__label">Estimated Traffic</span><br />
+              <span class="metric__explanation">How many people might click or engage based on the campaign goal.</span>
+            </td>
+            <td class="metric__value" id="metric-traffic">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div id="tips" class="panel__tips" aria-live="polite"></div>
 
 <script>
+  // Toggle the inputs panel. aria-expanded reflects visibility after the toggle.
   function toggleForm() {
-    const formSection = document.getElementById('section-1');
-    const button = document.querySelector('.toggle-button');
-    const isHidden = formSection.style.display === 'none';
-    // Toggle visibility
-    formSection.style.display = isHidden ? 'block' : 'none';
-    // aria-expanded should reflect the new state (true when visible)
-    button.setAttribute('aria-expanded', String(isHidden));
-    button.textContent = isHidden ? 'Hide Inputs' : 'Show Inputs';
+    const formPanel = document.getElementById('panel-form');
+    const button = document.querySelector('.btn--toggle');
+    const currentlyHidden = getComputedStyle(formPanel).display === 'none';
+    // If hidden -> show; if shown -> hide
+    formPanel.style.display = currentlyHidden ? 'block' : 'none';
+    // aria-expanded should reflect new visible state (true when visible)
+    button.setAttribute('aria-expanded', String(currentlyHidden));
+    button.textContent = currentlyHidden ? 'Hide Inputs' : 'Show Inputs';
   }
 
-  const form = document.getElementById('form-1');
-  const totalBudgetEl = document.getElementById('metric-1');
-  const dailyBudgetEl = document.getElementById('metric-2');
-  const budgetPerAdEl = document.getElementById('metric-3');
-  const impressionsEl = document.getElementById('metric-4');
-  const avgRepetitionEl = document.getElementById('metric-5');
-  const dailyRepetitionEl = document.getElementById('metric-6');
-  const estimatedTrafficEl = document.getElementById('metric-7');
-  const tipsContainer = document.getElementById('tips-1');
+  const form = document.getElementById('form-campaign');
+  const totalBudgetEl = document.getElementById('metric-budget');
+  const dailyBudgetEl = document.getElementById('metric-daily');
+  const budgetPerAdEl = document.getElementById('metric-per-ad');
+  const impressionsEl = document.getElementById('metric-impressions');
+  const avgRepetitionEl = document.getElementById('metric-avg-rep');
+  const dailyRepetitionEl = document.getElementById('metric-daily-rep');
+  const estimatedTrafficEl = document.getElementById('metric-traffic');
+  const tipsContainer = document.getElementById('tips');
 
   function showTip(message, type = "warning") {
     const box = document.createElement("div");
-    box.className = type === "recommendation" ? "recommendation" : "warning";
+    box.className = type === "recommendation" ? "tip tip--recommendation" : "tip tip--warning";
     box.textContent = message;
     tipsContainer.appendChild(box);
   }
@@ -143,7 +150,7 @@
   function calculateMetrics() {
     clearTips();
 
-    // Parse and sanitize inputs
+    // Parse and sanitize inputs (names kept same so form.budget etc still work)
     const budget = Math.max(0, Number(form.budget.value) || 0);
     const duration = Math.max(0, parseInt(form.duration.value || 0, 10));
     const adsets = Math.max(0, parseInt(form.adsets.value || 0, 10));
@@ -230,13 +237,13 @@
     }
   }
 
+  // Attach to form inputs and init
   form.addEventListener('input', calculateMetrics);
 
-  // Initialize on load so users see baseline values
   window.addEventListener('DOMContentLoaded', () => {
-    // Ensure form section is visible by default
-    document.getElementById('section-1').style.display = 'block';
-    document.querySelector('.toggle-button').setAttribute('aria-expanded', 'true');
+    // Ensure form panel is visible by default
+    document.getElementById('panel-form').style.display = 'block';
+    document.querySelector('.btn--toggle').setAttribute('aria-expanded', 'true');
     calculateMetrics();
   });
 </script>
