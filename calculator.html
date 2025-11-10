@@ -9,10 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 
   <!-- Custom stylesheet -->
- <style>
-<link rel="stylesheet" href="style.css">
-</style>
-
+  <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
@@ -115,7 +112,9 @@
     const formSection = document.getElementById('section-1');
     const button = document.querySelector('.toggle-button');
     const isHidden = formSection.style.display === 'none';
+    // Toggle visibility
     formSection.style.display = isHidden ? 'block' : 'none';
+    // aria-expanded should reflect the new state (true when visible)
     button.setAttribute('aria-expanded', String(isHidden));
     button.textContent = isHidden ? 'Hide Inputs' : 'Show Inputs';
   }
@@ -244,4 +243,3 @@
   </div>
 </body>
 </html>
-
