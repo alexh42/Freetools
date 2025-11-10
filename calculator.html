@@ -20,8 +20,10 @@
     <div class="nav-logo">Campaign Tools</div>
     <label for="nav-toggle" class="nav-toggle-label">☰</label>
     <ul class="nav-links">
-      <li><a href="calculator.html">Paid Ads Calculator<li><a href="#"></a></li>
-      <li><a href="#">Coming Soon</li><li><a href="#">Coming Soon</li></ul>
+      <li><a href="calculator.html" aria-current="page">Paid Ads Calculator</a></li>
+      <li><a href="#">Coming Soon</a></li>
+      <li><a href="#">Coming Soon</a></li>
+    </ul>
   </div>
 </nav>
   
@@ -33,7 +35,7 @@
     <section id="panel-form" class="panel panel--form" role="region" aria-labelledby="panel-form-heading">
       <h2 id="panel-form-heading" class="panel__heading">Inputs</h2>
 
-      <form id="form-campaign" class="form" onsubmit="return false;">
+      <form id="form-campaign" class="form" onsubmit="return false;" novalidate>
         <label for="budget-input">Budget (€):</label>
         <input type="number" id="budget-input" name="budget" min="0" step="0.01" placeholder="e.g. 1000" />
 
@@ -123,7 +125,7 @@
       </table>
     </section>
 
-    <div id="tips" class="panel__tips" aria-live="polite"></div>
+    <div id="tips" class="panel__tips" aria-live="polite" role="status"></div>
 
 <script>
   // Toggle the inputs panel. aria-expanded reflects visibility after the toggle.
@@ -253,14 +255,16 @@
   form.addEventListener('input', calculateMetrics);
 
   window.addEventListener('DOMContentLoaded', () => {
-    // Ensure form panel is visible by default
-    document.getElementById('panel-form').style.display = 'block';
-    document.querySelector('.btn--toggle').setAttribute('aria-expanded', 'true');
+    // Ensure form panel is visible by default and button reflects the true state
+    const formPanel = document.getElementById('panel-form');
+    const toggleBtn = document.querySelector('.btn--toggle');
+    const panelHidden = getComputedStyle(formPanel).display === 'none';
+    formPanel.style.display = panelHidden ? 'none' : 'block'; // keep whatever was set in markup or stylesheet
+    toggleBtn.setAttribute('aria-expanded', String(!panelHidden));
+    toggleBtn.textContent = panelHidden ? 'Show Inputs' : 'Hide Inputs';
     calculateMetrics();
   });
 </script>
   </div>
 </body>
 </html>
-
-
