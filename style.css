@@ -272,3 +272,68 @@ textarea:focus {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* --- Nav: make the top menu full width --- */
+.nav-container {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--nav-background, #fff);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+/* ensure nav links spread correctly */
+.nav-container .nav-links,
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* --- Restore styled table appearance (explicit, higher specificity) --- */
+.styled-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+  font-size: 0.95rem;
+  font-family: inherit;
+  min-width: 320px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.styled-table thead tr {
+  background-color: var(--primary-color, #4caf50);
+  color: #ffffff;
+  text-align: left;
+  font-weight: 600;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #f7f7f7;
+}
+
+.styled-table tbody tr:last-of-type td {
+  border-bottom: 0;
+}
+
+/* page-specific specificity — if calculator.html wraps the content in a #calculator or .calculator-page,
+   uncomment or adjust the selector below to ensure overrides on that page only:
+#calculator .styled-table,
+.calculator-page .styled-table {
+  /* same styles above if needed */
+}
+*/
