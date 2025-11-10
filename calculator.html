@@ -1,270 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Campaign Planner Calculator</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculator - Freetools</title>
 
-  <!-- Font kept (optional) -->
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+  <!-- Font used by the CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Custom stylesheet -->
+  <!-- Main stylesheet (ensure path is correct relative to this file) -->
   <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
-  
-<nav class="navbar">
-  <input type="checkbox" id="nav-toggle" class="nav-toggle">
-  <div class="nav-container">
-    <div class="nav-logo">Campaign Tools</div>
-    <label for="nav-toggle" class="nav-toggle-label">☰</label>
-    <ul class="nav-links">
-      <li><a href="calculator.html" aria-current="page">Paid Ads Calculator</a></li>
-      <li><a href="#">Coming Soon</a></li>
-      <li><a href="#">Coming Soon</a></li>
-    </ul>
-  </div>
-</nav>
-  
-  <h1>Campaign Planner Calculator</h1>
+  <!-- IMPORTANT: place the input BEFORE the .nav-container so the CSS selector
+       .nav-toggle:checked ~ .nav-container .nav-links works without requiring
+       the elements to be direct siblings in a specific order.
+  -->
+  <input id="nav-toggle" class="nav-toggle" type="checkbox" aria-hidden="false" />
 
-  <div class="layout">
-    <button type="button" class="btn btn--toggle" aria-controls="panel-form" aria-expanded="true" onclick="toggleForm()">Hide Inputs</button>
+  <!-- Make the label focusable (tabindex) so keyboard users can open the menu.
+       The small script at the bottom keeps aria-expanded in sync for screen readers.
+  -->
+  <label for="nav-toggle" class="nav-toggle-label" id="nav-toggle-label" tabindex="0" role="button" aria-controls="main-nav" aria-expanded="false">☰</label>
 
-    <section id="panel-form" class="panel panel--form" role="region" aria-labelledby="panel-form-heading">
-      <h2 id="panel-form-heading" class="panel__heading">Inputs</h2>
+  <header class="navbar" role="banner">
+    <div class="nav-container">
+      <div class="nav-logo">Freetools</div>
 
-      <form id="form-campaign" class="form" onsubmit="return false;" novalidate>
-        <label for="budget-input">Budget (€):</label>
-        <input type="number" id="budget-input" name="budget" min="0" step="0.01" placeholder="e.g. 1000" />
+      <nav id="main-nav" class="nav" role="navigation" aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="calculator.html" aria-current="page">Calculator</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-        <label for="goal-select">Campaign Goal:</label>
-        <select id="goal-select" name="goal">
-          <option value="0.59" data-ctr="0.001">Brand Awareness (CPM = 0.59€)</option>
-          <option value="1.12" data-ctr="0.0157">Traffic (CPM = 1.12€)</option>
-          <option value="3.83" data-ctr="0.0104">Purchase (CPM = 3.83€)</option>
-          <option value="5.39" data-ctr="0.0039">Video Views (CPM = 5.39€)</option>
+  <main class="container" role="main">
+    <h1>Calculator</h1>
+
+    <section class="form-section">
+      <button class="toggle-button" type="button" aria-pressed="false">Toggle Example</button>
+
+      <form id="calc-form" aria-label="Example calculator form">
+        <label for="value-a">Value A</label>
+        <input id="value-a" name="value-a" type="number" inputmode="numeric" />
+
+        <label for="value-b">Value B</label>
+        <input id="value-b" name="value-b" type="number" inputmode="numeric" />
+
+        <label for="operation">Operation</label>
+        <select id="operation" name="operation">
+          <option value="add">Add</option>
+          <option value="sub">Subtract</option>
+          <option value="mul">Multiply</option>
+          <option value="div">Divide</option>
         </select>
 
-        <label for="audience-input">Estimated Audience Size:</label>
-        <input type="number" id="audience-input" name="audience" value="100000" min="1" step="1" />
-
-        <label for="duration-input">Campaign Duration (days):</label>
-        <input type="number" id="duration-input" name="duration" min="0" step="1" placeholder="e.g. 30" />
-
-        <label for="adsets-input">Number of Ad Sets:</label>
-        <input type="number" id="adsets-input" name="adsets" min="0" step="1" value="0" />
-
-        <label for="adsperset-input">Number of Ads per Ad Set:</label>
-        <input type="number" id="adsperset-input" name="adsPerSet" min="0" step="1" value="0" />
+        <div class="mt-30">
+          <button type="submit" class="toggle-button">Calculate</button>
+        </div>
       </form>
     </section>
 
-    <section id="panel-metrics" class="panel panel--metrics" role="region" aria-labelledby="panel-metrics-heading">
-      <h2 id="panel-metrics-heading" class="panel__heading">Metrics</h2>
+    <section class="form-section">
+      <h2>Results</h2>
 
-      <table class="metrics-table">
-        <thead>
-          <tr>
-            <th>Metric</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="metrics__row">
-            <td>
-              <span class="metric__label">Budget for the Period</span><br />
-              <span class="metric__explanation">Total amount you'll spend during the campaign.</span>
-            </td>
-            <td class="metric__value" id="metric-budget">—</td>
-          </tr>
-          <tr class="metrics__row">
-            <td>
-              <span class="metric__label">Daily Budget</span><br />
-              <span class="metric__explanation">How much you spend each day.</span>
-            </td>
-            <td class="metric__value" id="metric-daily">—</td>
-          </tr>
-          <tr class="metrics__row">
-            <td>
-              <span class="metric__label">Daily Budget per Ad</span><br />
-              <span class="metric__explanation">How much each ad gets per day.</span>
-            </td>
-            <td class="metric__value" id="metric-per-ad">—</td>
-          </tr>
-          <tr class="metrics__row">
-            <td>
-              <span class="metric__label">Estimated Total Impressions</span><br />
-              <span class="metric__explanation">How many times your ads might be seen in total.</span>
-            </td>
-            <td class="metric__value" id="metric-impressions">—</td>
-          </tr>
-          <tr class="metrics__row">
-            <td>
-              <span class="metric__label">Average Repetition</span><br />
-              <span class="metric__explanation">How many times a person might see an ad during the entire campaign.</span>
-            </td>
-            <td class="metric__value" id="metric-avg-rep">—</td>
-          </tr>
-          <tr class="metrics__row">
-            <td>
-              <span class="metric__label">Daily Repetition</span><br />
-              <span class="metric__explanation">How many times a person might see an ad per day.</span>
-            </td>
-            <td class="metric__value" id="metric-daily-rep">—</td>
-          </tr>
-          <tr class="metrics__row">
-            <td>
-              <span class="metric__label">Estimated Traffic</span><br />
-              <span class="metric__explanation">How many people might click or engage based on the campaign goal.</span>
-            </td>
-            <td class="metric__value" id="metric-traffic">—</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Responsive table wrapper recommended by the updated stylesheet.
+           Keep the table as a proper <table> element and wrap it so rounded corners remain. -->
+      <div class="table-responsive" aria-live="polite">
+        <table class="styled-table" role="table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="active-row">
+              <td class="metric-label">Example</td>
+              <td class="metric-value" id="result-value">—</td>
+              <td class="explanation">Calculation result will appear here.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
-    <div id="tips" class="panel__tips" aria-live="polite" role="status"></div>
+    <section class="tips">
+      <div class="warning" role="note">
+        Tip: On small screens use the menu icon to open navigation. If the menu doesn't open, make sure the checkbox input isn't removed or set to display:none.
+      </div>
 
-<script>
-  // Toggle the inputs panel. aria-expanded reflects visibility after the toggle.
-  function toggleForm() {
-    const formPanel = document.getElementById('panel-form');
-    const button = document.querySelector('.btn--toggle');
-    const currentlyHidden = getComputedStyle(formPanel).display === 'none';
-    // If hidden -> show; if shown -> hide
-    formPanel.style.display = currentlyHidden ? 'block' : 'none';
-    // aria-expanded should reflect new visible state (true when visible)
-    button.setAttribute('aria-expanded', String(currentlyHidden));
-    button.textContent = currentlyHidden ? 'Hide Inputs' : 'Show Inputs';
-  }
+      <div class="recommendation" role="note">
+        Recommendation: Wrap wide tables with &lt;div class="table-responsive"&gt; to keep rounded corners on your tables.
+      </div>
+    </section>
+  </main>
 
-  const form = document.getElementById('form-campaign');
-  const totalBudgetEl = document.getElementById('metric-budget');
-  const dailyBudgetEl = document.getElementById('metric-daily');
-  const budgetPerAdEl = document.getElementById('metric-per-ad');
-  const impressionsEl = document.getElementById('metric-impressions');
-  const avgRepetitionEl = document.getElementById('metric-avg-rep');
-  const dailyRepetitionEl = document.getElementById('metric-daily-rep');
-  const estimatedTrafficEl = document.getElementById('metric-traffic');
-  const tipsContainer = document.getElementById('tips');
+  <script>
+    // Small, unobtrusive script to improve accessibility of the CSS-only nav toggle.
+    // - Keeps aria-expanded on the label in sync with the checkbox state.
+    // - Allows the label to toggle the checkbox via Enter/Space when focused.
+    (function () {
+      const checkbox = document.getElementById('nav-toggle');
+      const label = document.getElementById('nav-toggle-label');
+      const links = document.querySelector('.nav-links');
 
-  function showTip(message, type = "warning") {
-    const box = document.createElement("div");
-    box.className = type === "recommendation" ? "tip tip--recommendation" : "tip tip--warning";
-    box.textContent = message;
-    tipsContainer.appendChild(box);
-  }
+      if (!checkbox || !label) return;
 
-  function clearTips() {
-    tipsContainer.innerHTML = "";
-  }
+      // Initialize aria-expanded to the current state.
+      function updateAria() {
+        const expanded = !!checkbox.checked;
+        label.setAttribute('aria-expanded', expanded.toString());
+        // Also set aria-hidden on the menu for screen readers when collapsed.
+        if (links) links.setAttribute('aria-hidden', (!expanded).toString());
+      }
+      updateAria();
 
-  function calculateMetrics() {
-    clearTips();
+      // When the checkbox changes (click or programmatic), update aria attributes.
+      checkbox.addEventListener('change', updateAria);
 
-    // Parse and sanitize inputs (names kept same so form.budget etc still work)
-    const budget = Math.max(0, Number(form.budget.value) || 0);
-    const duration = Math.max(0, parseInt(form.duration.value || 0, 10));
-    const adsets = Math.max(0, parseInt(form.adsets.value || 0, 10));
-    const adsPerSet = Math.max(0, parseInt(form.adsPerSet.value || 0, 10));
-    const audience = Math.max(1, parseInt(form.audience.value || 1, 10));
+      // Make the label operable by keyboard (Enter/Space) when it's focused.
+      label.addEventListener('keydown', function (ev) {
+        const code = ev.key;
+        if (code === 'Enter' || code === ' ' || code === 'Spacebar') {
+          ev.preventDefault();
+          checkbox.checked = !checkbox.checked;
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+          // Move focus to the first link if opening, or back to the label if closing.
+          if (checkbox.checked) {
+            const firstLink = document.querySelector('.nav-links a');
+            if (firstLink) firstLink.focus();
+          } else {
+            label.focus();
+          }
+        }
+      });
 
-    const goalOption = form.goal.options[form.goal.selectedIndex];
-    const cpm = Math.max(0, Number(goalOption.value) || 0);
-    const ctr = Math.max(0, Number(goalOption.dataset.ctr) || 0);
+      // Optional: close menu when clicking a nav link (mobile behavior).
+      document.querySelectorAll('.nav-links a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          if (checkbox.checked) {
+            checkbox.checked = false;
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+      });
 
-    const totalAds = adsets * adsPerSet;
-    const dailyBudget = duration > 0 ? (budget / duration) : 0;
-    const budgetPerAd = totalAds > 0 ? (dailyBudget / totalAds) : 0;
-
-    const impressions = cpm > 0 ? Math.floor((budget / cpm) * 1000) : 0;
-    const avgRepetition = impressions > 0 ? (impressions / audience) : 0;
-    const dailyImpressions = (cpm > 0) ? ((dailyBudget / cpm) * 1000) : 0;
-    const dailyRepetition = audience > 0 ? (dailyImpressions / audience) : 0;
-    const estimatedTraffic = Math.floor(impressions * ctr);
-
-    // Display
-    totalBudgetEl.textContent = budget.toFixed(2) + " €";
-    dailyBudgetEl.textContent = dailyBudget.toFixed(2) + " €";
-    budgetPerAdEl.textContent = budgetPerAd.toFixed(2) + " €";
-    impressionsEl.textContent = impressions.toLocaleString();
-    avgRepetitionEl.textContent = avgRepetition.toFixed(2);
-    dailyRepetitionEl.textContent = dailyRepetition.toFixed(2);
-    estimatedTrafficEl.textContent = estimatedTraffic.toLocaleString();
-
-    // Warnings & Recommendations
-    if (budgetPerAd > 0 && budgetPerAd < 10) {
-      showTip("⚠️ Your daily budget per ad is below 10€. Consider removing ads or reducing granularity to ensure each creative gets enough delivery.");
-    }
-
-    if (avgRepetition > 180) {
-      showTip("⚠️ Your audience might see the same ad too many times. Consider increasing your audience size or refreshing creatives.");
-    } else if (avgRepetition > 0 && avgRepetition < 30) {
-      showTip("⚠️ Your ads may not be seen enough times to make an impact. Consider increasing budget or reducing audience size.");
-    }
-
-    if (dailyRepetition > 0 && dailyRepetition < 1) {
-      showTip("⚠️ Your daily repetition is below 1. Your audience may not see your ads often enough each day to remember them.");
-    }
-
-    if (totalAds > 20) {
-      showTip("⚠️ You have a high number of ads. Consider starting with fewer creatives and scaling only the best performers.");
-    }
-
-    if (duration > 0 && duration < 21) {
-      showTip("⚠️ Short campaigns may not give enough time for learning and optimization. Consider running for at least 3 weeks.");
-    }
-
-    if (budget > 0 && budget < 500) {
-      showTip("⚠️ Your total budget is quite low. Consider focusing on fewer ads or a smaller audience to maximize impact.");
-    }
-
-    if (impressions > 0 && impressions < 100000) {
-      showTip("⚠️ Your estimated impressions are low. Consider increasing budget or choosing a lower CPM goal.");
-    }
-
-    // Recommendations
-    if (budgetPerAd >= 10) {
-      showTip("💡 Your daily budget per ad is healthy. Consider testing different creative formats to find what performs best.", "recommendation");
-    }
-
-    if (avgRepetition >= 60 && avgRepetition <= 170) {
-      showTip("💡 Your average repetition is in a good range for brand recall and conversion potential.", "recommendation");
-    }
-
-    if (impressions > 500000) {
-      showTip("💡 You're reaching a large audience. Consider segmenting your audience to tailor messages more effectively.", "recommendation");
-    }
-
-    if (totalAds > 0 && totalAds <= 5) {
-      showTip("💡 Starting with fewer creatives is a good strategy. Monitor performance and scale only the best ones.", "recommendation");
-    }
-
-    if (duration >= 14) {
-      showTip("💡 Longer campaigns allow for better learning and optimization. Refresh creatives if performance drops.", "recommendation");
-    }
-
-    if (dailyRepetition >= 1 && dailyRepetition <= 3) {
-      showTip("💡 Your audience is seeing your ads consistently each day. This can help drive engagement and conversions.", "recommendation");
-    }
-  }
-
-  // Attach to form inputs and init
-  form.addEventListener('input', calculateMetrics);
-
-  window.addEventListener('DOMContentLoaded', () => {
-    // Ensure form panel is visible by default and button reflects the true state
-    const formPanel = document.getElementById('panel-form');
-    const toggleBtn = document.querySelector('.btn--toggle');
-    const panelHidden = getComputedStyle(formPanel).display === 'none';
-    formPanel.style.display = panelHidden ? 'none' : 'block'; // keep whatever was set in markup or stylesheet
-    toggleBtn.setAttribute('aria-expanded', String(!panelHidden));
-    toggleBtn.textContent = panelHidden ? 'Show Inputs' : 'Hide Inputs';
-    calculateMetrics();
-  });
-</script>
-  </div>
+      // Example: simple form handling that updates the result cell (keeps page JS-light).
+      const form = document.getElementById('calc-form');
+      const resultCell = document.getElementById('result-value');
+      form && form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        const a = parseFloat(document.getElementById('value-a').value) || 0;
+        const b = parseFloat(document.getElementById('value-b').value) || 0;
+        const op = document.getElementById('operation').value;
+        let res = '—';
+        if (op === 'add') res = a + b;
+        else if (op === 'sub') res = a - b;
+        else if (op === 'mul') res = a * b;
+        else if (op === 'div') res = b !== 0 ? (a / b) : '∞';
+        resultCell.textContent = res;
+      });
+    })();
+  </script>
 </body>
 </html>
