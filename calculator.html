@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Campaign Planner Calculator</title>
 
   <!-- Font kept (optional) -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 
-  <!-- Pico.css added as requested so you can use an open-source stylesheet -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.5" />
+  <!-- Holiday.css added as an open-source stylesheet -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.5" />
 
   <!-- All internal CSS removed so you can plug in your own stylesheet -->
 </head>
@@ -16,12 +17,12 @@
   <h1>Campaign Planner Calculator</h1>
 
   <div class="container">
-    <button class="toggle-button" onclick="toggleForm()">Show/Hide Inputs</button>
+    <button type="button" class="toggle-button" aria-controls="section-1" aria-expanded="true" onclick="toggleForm()">Hide Inputs</button>
 
     <div id="section-1" class="form-section">
-      <form id="form-1">
+      <form id="form-1" onsubmit="return false;">
         <label for="input-1">Budget (€):</label>
-        <input type="number" id="input-1" name="budget" />
+        <input type="number" id="input-1" name="budget" min="0" step="0.01" placeholder="e.g. 1000" />
 
         <label for="input-2">Campaign Goal:</label>
         <select id="input-2" name="goal">
@@ -32,16 +33,16 @@
         </select>
 
         <label for="input-3">Estimated Audience Size:</label>
-        <input type="number" id="input-3" name="audience" value="100000" />
+        <input type="number" id="input-3" name="audience" value="100000" min="1" step="1" />
 
         <label for="input-4">Campaign Duration (days):</label>
-        <input type="number" id="input-4" name="duration" />
+        <input type="number" id="input-4" name="duration" min="0" step="1" placeholder="e.g. 30" />
 
         <label for="input-5">Number of Ad Sets:</label>
-        <input type="number" id="input-5" name="adsets" />
+        <input type="number" id="input-5" name="adsets" min="0" step="1" value="0" />
 
         <label for="input-6">Number of Ads per Ad Set:</label>
-        <input type="number" id="input-6" name="adsPerSet" />
+        <input type="number" id="input-6" name="adsPerSet" min="0" step="1" value="0" />
       </form>
     </div>
 
@@ -105,122 +106,139 @@
       </tbody>
     </table>
 
-    <div id="tips-1" class="tips"></div>
+    <div id="tips-1" class="tips" aria-live="polite"></div>
 
 <script>
-    function toggleForm() {
-      const formSection = document.getElementById('section-1');
-      formSection.style.display = formSection.style.display === 'none' ? 'block' : 'none';
+  function toggleForm() {
+    const formSection = document.getElementById('section-1');
+    const button = document.querySelector('.toggle-button');
+    const isHidden = formSection.style.display === 'none';
+    formSection.style.display = isHidden ? 'block' : 'none';
+    button.setAttribute('aria-expanded', String(isHidden));
+    button.textContent = isHidden ? 'Hide Inputs' : 'Show Inputs';
+  }
+
+  const form = document.getElementById('form-1');
+  const totalBudgetEl = document.getElementById('metric-1');
+  const dailyBudgetEl = document.getElementById('metric-2');
+  const budgetPerAdEl = document.getElementById('metric-3');
+  const impressionsEl = document.getElementById('metric-4');
+  const avgRepetitionEl = document.getElementById('metric-5');
+  const dailyRepetitionEl = document.getElementById('metric-6');
+  const estimatedTrafficEl = document.getElementById('metric-7');
+  const tipsContainer = document.getElementById('tips-1');
+
+  function showTip(message, type = "warning") {
+    const box = document.createElement("div");
+    box.className = type === "recommendation" ? "recommendation" : "warning";
+    box.textContent = message;
+    tipsContainer.appendChild(box);
+  }
+
+  function clearTips() {
+    tipsContainer.innerHTML = "";
+  }
+
+  function calculateMetrics() {
+    clearTips();
+
+    // Parse and sanitize inputs
+    const budget = Math.max(0, Number(form.budget.value) || 0);
+    const duration = Math.max(0, parseInt(form.duration.value || 0, 10));
+    const adsets = Math.max(0, parseInt(form.adsets.value || 0, 10));
+    const adsPerSet = Math.max(0, parseInt(form.adsPerSet.value || 0, 10));
+    const audience = Math.max(1, parseInt(form.audience.value || 1, 10));
+
+    const goalOption = form.goal.options[form.goal.selectedIndex];
+    const cpm = Math.max(0, Number(goalOption.value) || 0);
+    const ctr = Math.max(0, Number(goalOption.dataset.ctr) || 0);
+
+    const totalAds = adsets * adsPerSet;
+    const dailyBudget = duration > 0 ? (budget / duration) : 0;
+    const budgetPerAd = totalAds > 0 ? (dailyBudget / totalAds) : 0;
+
+    const impressions = cpm > 0 ? Math.floor((budget / cpm) * 1000) : 0;
+    const avgRepetition = impressions > 0 ? (impressions / audience) : 0;
+    const dailyImpressions = (cpm > 0) ? ((dailyBudget / cpm) * 1000) : 0;
+    const dailyRepetition = audience > 0 ? (dailyImpressions / audience) : 0;
+    const estimatedTraffic = Math.floor(impressions * ctr);
+
+    // Display
+    totalBudgetEl.textContent = budget.toFixed(2) + " €";
+    dailyBudgetEl.textContent = dailyBudget.toFixed(2) + " €";
+    budgetPerAdEl.textContent = budgetPerAd.toFixed(2) + " €";
+    impressionsEl.textContent = impressions.toLocaleString();
+    avgRepetitionEl.textContent = avgRepetition.toFixed(2);
+    dailyRepetitionEl.textContent = dailyRepetition.toFixed(2);
+    estimatedTrafficEl.textContent = estimatedTraffic.toLocaleString();
+
+    // Warnings & Recommendations
+    if (budgetPerAd > 0 && budgetPerAd < 10) {
+      showTip("⚠️ Your daily budget per ad is below 10€. Consider removing ads or reducing granularity to ensure each creative gets enough delivery.");
     }
 
-    const form = document.getElementById('form-1');
-    const totalBudgetEl = document.getElementById('metric-1');
-    const dailyBudgetEl = document.getElementById('metric-2');
-    const budgetPerAdEl = document.getElementById('metric-3');
-    const impressionsEl = document.getElementById('metric-4');
-    const avgRepetitionEl = document.getElementById('metric-5');
-    const dailyRepetitionEl = document.getElementById('metric-6');
-    const estimatedTrafficEl = document.getElementById('metric-7');
-    const tipsContainer = document.getElementById('tips-1');
-
-    function showTip(message, type = "warning") {
-      const box = document.createElement("div");
-      // keep classes for styling by external stylesheet
-      box.className = type === "recommendation" ? "recommendation" : "warning";
-      box.textContent = message;
-      tipsContainer.appendChild(box);
+    if (avgRepetition > 180) {
+      showTip("⚠️ Your audience might see the same ad too many times. Consider increasing your audience size or refreshing creatives.");
+    } else if (avgRepetition > 0 && avgRepetition < 30) {
+      showTip("⚠️ Your ads may not be seen enough times to make an impact. Consider increasing budget or reducing audience size.");
     }
 
-    form.addEventListener('input', () => {
-      tipsContainer.innerHTML = "";
+    if (dailyRepetition > 0 && dailyRepetition < 1) {
+      showTip("⚠️ Your daily repetition is below 1. Your audience may not see your ads often enough each day to remember them.");
+    }
 
-      const budget = parseFloat(form.budget.value) || 0;
-      const duration = parseFloat(form.duration.value) || 0;
-      const adsets = parseInt(form.adsets.value) || 0;
-      const adsPerSet = parseInt(form.adsPerSet.value) || 0;
-      const audience = parseInt(form.audience.value) || 1;
+    if (totalAds > 20) {
+      showTip("⚠️ You have a high number of ads. Consider starting with fewer creatives and scaling only the best performers.");
+    }
 
-      const goalOption = form.goal.options[form.goal.selectedIndex];
-      const cpm = parseFloat(goalOption.value) || 1;
-      const ctr = parseFloat(goalOption.dataset.ctr) || 0.01;
+    if (duration > 0 && duration < 21) {
+      showTip("⚠️ Short campaigns may not give enough time for learning and optimization. Consider running for at least 3 weeks.");
+    }
 
-      const totalAds = adsets * adsPerSet;
-      const dailyBudget = duration > 0 ? (budget / duration) : 0;
-      const budgetPerAd = totalAds > 0 ? (dailyBudget / totalAds) : 0;
-      const impressions = cpm > 0 ? Math.floor((budget / cpm) * 1000) : 0;
-      const avgRepetition = impressions > 0 ? (impressions / audience) : 0;
-      const dailyImpressions = (dailyBudget / cpm) * 1000;
-      const dailyRepetition = audience > 0 ? (dailyImpressions / audience) : 0;
-      const estimatedTraffic = Math.floor(impressions * ctr);
+    if (budget > 0 && budget < 500) {
+      showTip("⚠️ Your total budget is quite low. Consider focusing on fewer ads or a smaller audience to maximize impact.");
+    }
 
-      totalBudgetEl.textContent = budget.toFixed(2) + " €";
-      dailyBudgetEl.textContent = dailyBudget.toFixed(2) + " €";
-      budgetPerAdEl.textContent = budgetPerAd.toFixed(2) + " €";
-      impressionsEl.textContent = impressions.toLocaleString();
-      avgRepetitionEl.textContent = avgRepetition.toFixed(2);
-      dailyRepetitionEl.textContent = dailyRepetition.toFixed(2);
-      estimatedTrafficEl.textContent = estimatedTraffic.toLocaleString();
+    if (impressions > 0 && impressions < 100000) {
+      showTip("⚠️ Your estimated impressions are low. Consider increasing budget or choosing a lower CPM goal.");
+    }
 
-      // Warnings & Recommendations (text only; styling left to external CSS)
-      if (budgetPerAd < 10 && budgetPerAd > 0) {
-        showTip("⚠️ Your daily budget per ad is below 10€. Consider removing ads or reducing granularity to ensure each creative gets enough delivery.");
-      }
+    // Recommendations
+    if (budgetPerAd >= 10) {
+      showTip("💡 Your daily budget per ad is healthy. Consider testing different creative formats to find what performs best.", "recommendation");
+    }
 
-      if (avgRepetition > 180) {
-        showTip("⚠️ Your audience might see the same ad too many times. Consider increasing your audience size or refreshing creatives.");
-      }
+    if (avgRepetition >= 60 && avgRepetition <= 170) {
+      showTip("💡 Your average repetition is in a good range for brand recall and conversion potential.", "recommendation");
+    }
 
-      if (avgRepetition < 30) {
-        showTip("⚠️ Your ads may not be seen enough times to make an impact. Consider increasing budget or reducing audience size.");
-      }
+    if (impressions > 500000) {
+      showTip("💡 You're reaching a large audience. Consider segmenting your audience to tailor messages more effectively.", "recommendation");
+    }
 
-      if (dailyRepetition < 1 && dailyRepetition > 0) {
-        showTip("⚠️ Your daily repetition is below 1. Your audience may not see your ads often enough each day to remember them.");
-      }
+    if (totalAds > 0 && totalAds <= 5) {
+      showTip("💡 Starting with fewer creatives is a good strategy. Monitor performance and scale only the best ones.", "recommendation");
+    }
 
-      if (totalAds > 20) {
-        showTip("⚠️ You have a high number of ads. Consider starting with fewer creatives and scaling only the best performers.");
-      }
+    if (duration >= 14) {
+      showTip("💡 Longer campaigns allow for better learning and optimization. Refresh creatives if performance drops.", "recommendation");
+    }
 
-      if (duration < 21 && duration > 0) {
-        showTip("⚠️ Short campaigns may not give enough time for learning and optimization. Consider running for at least 3 weeks.");
-      }
+    if (dailyRepetition >= 1 && dailyRepetition <= 3) {
+      showTip("💡 Your audience is seeing your ads consistently each day. This can help drive engagement and conversions.", "recommendation");
+    }
+  }
 
-      if (budget < 500 && budget > 0) {
-        showTip("⚠️ Your total budget is quite low. Consider focusing on fewer ads or a smaller audience to maximize impact.");
-      }
+  form.addEventListener('input', calculateMetrics);
 
-      if (impressions < 100000 && impressions > 0) {
-        showTip("⚠️ Your estimated impressions are low. Consider increasing budget or choosing a lower CPM goal.");
-      }
-
-      // Recommendations
-      if (budgetPerAd >= 10) {
-        showTip("💡 Your daily budget per ad is healthy. Consider testing different creative formats to find what performs best.", "recommendation");
-      }
-
-      if (avgRepetition >= 60 && avgRepetition <= 170) {
-        showTip("💡 Your average repetition is in a good range for brand recall and conversion potential.", "recommendation");
-      }
-
-      if (impressions > 500000) {
-        showTip("💡 You're reaching a large audience. Consider segmenting your audience to tailor messages more effectively.", "recommendation");
-      }
-
-      if (totalAds <= 5 && totalAds > 0) {
-        showTip("💡 Starting with fewer creatives is a good strategy. Monitor performance and scale only the best ones.", "recommendation");
-      }
-
-      if (duration >= 14) {
-        showTip("💡 Longer campaigns allow for better learning and optimization. Refresh creatives if performance drops.", "recommendation");
-      }
-
-      if (dailyRepetition >= 1 && dailyRepetition <= 3) {
-        showTip("💡 Your audience is seeing your ads consistently each day. This can help drive engagement and conversions.", "recommendation");
-      }
-    });
-  </script>
+  // Initialize on load so users see baseline values
+  window.addEventListener('DOMContentLoaded', () => {
+    // Ensure form section is visible by default
+    document.getElementById('section-1').style.display = 'block';
+    document.querySelector('.toggle-button').setAttribute('aria-expanded', 'true');
+    calculateMetrics();
+  });
+</script>
   </div>
 </body>
 </html>
-
