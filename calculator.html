@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Campaign Planner Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+
+      font-family: 'Open Sans', sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* ========== Layout ========== */
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .form-section {
+      display: block;
+      margin-bottom: 30px;
+    }
+    .tips {
+      margin-top: 30px;
+    }
+
+    /* ========== Controls (Buttons & Form Inputs) ========== */
+    .toggle-button {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 20px;
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input,
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    /* ========== Table ========== */
+    
+.styled-table {
+    border-collapse: collapse;
+	border-radius: 5px;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+
+
+    /* ========== Metrics Text Styles ========== */
+    .metric-label {
+      font-weight: bold;
+    }
+    .metric-value {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #333;
+    }
+    .explanation {
+      font-size: 0.85em;
+      font-style: italic;
+      color: #555;
+      font-weight: normal;
+    }
+
+    /* ========== Notices (Warnings & Recommendations) ========== */
+    .warning,
+    .recommendation {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 0.9em;
+    }
+    .warning {
+      background: #fff3cd;
+      border-left: 5px solid #ffc107;
+    }
+    .recommendation {
+      background: #e6f4ea;
+      border-left: 5px solid #4caf50;
+    }
+  </style>
+</head>
+<body>
+  <h1>Campaign Planner Calculator</h1>
+
+  <div class="container">
+    <button class="toggle-button" onclick="toggleForm()">Show/Hide Inputs</button>
+
+    <div class="form-section" id="formSection">
+      <form id="campaignForm">
+        <label for="budget">Budget (€):</label>
+        <input type="number" id="budget" name="budget" />
+
+        <label for="goal">Campaign Goal:</label>
+        <select id="goal" name="goal">
+          <option value="0.59" data-ctr="0.001">Brand Awareness (CPM = 0.59€)</option>
+          <option value="1.12" data-ctr="0.0157">Traffic (CPM = 1.12€)</option>
+          <option value="3.83" data-ctr="0.0104">Purchase (CPM = 3.83€)</option>
+          <option value="5.39" data-ctr="0.0039">Video Views (CPM = 5.39€)</option>
+        </select>
+
+        <label for="audience">Estimated Audience Size:</label>
+        <input type="number" id="audience" name="audience" value="100000" />
+
+        <label for="duration">Campaign Duration (days):</label>
+        <input type="number" id="duration" name="duration" />
+
+        <label for="adsets">Number of Ad Sets:</label>
+        <input type="number" id="adsets" name="adsets" />
+
+        <label for="adsPerSet">Number of Ads per Ad Set:</label>
+        <input type="number" id="adsPerSet" name="adsPerSet" />
+      </form>
+    </div>
+
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="metric-label">Budget for the Period</span><br />
+            <span class="explanation">Total amount you'll spend during the campaign.</span>
+          </td>
+          <td class="metric-value" id="totalBudget">—</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="metric-label">Daily Budget</span><br />
+            <span class="explanation">How much you spend each day.</span>
+          </td>
+          <td class="metric-value" id="dailyBudget">—</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="metric-label">Daily Budget per Ad</span><br />
+            <span class="explanation">How much each ad gets per day.</span>
+          </td>
+          <td class="metric-value" id="budgetPerAd">—</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="metric-label">Estimated Total Impressions</span><br />
+            <span class="explanation">How many times your ads might be seen in total.</span>
+          </td>
+          <td class="metric-value" id="impressions">—</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="metric-label">Average Repetition</span><br />
+            <span class="explanation">How many times a person might see an ad during the entire campaign.</span>
+          </td>
+          <td class="metric-value" id="avgRepetition">—</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="metric-label">Daily Repetition</span><br />
+            <span class="explanation">How many times a person might see an ad per day.</span>
+          </td>
+          <td class="metric-value" id="dailyRepetition">—</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="metric-label">Estimated Traffic</span><br />
+            <span class="explanation">How many people might click or engage based on the campaign goal.</span>
+          </td>
+          <td class="metric-value" id="estimatedTraffic">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tips" id="tipsContainer"></div>
+<script>
+    function toggleForm() {
+      const formSection = document.getElementById('formSection');
+      formSection.style.display = formSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    const form = document.getElementById('campaignForm');
+    const totalBudgetEl = document.getElementById('totalBudget');
+    const dailyBudgetEl = document.getElementById('dailyBudget');
+    const budgetPerAdEl = document.getElementById('budgetPerAd');
+    const impressionsEl = document.getElementById('impressions');
+    const avgRepetitionEl = document.getElementById('avgRepetition');
+    const dailyRepetitionEl = document.getElementById('dailyRepetition');
+    const estimatedTrafficEl = document.getElementById('estimatedTraffic');
+    const tipsContainer = document.getElementById('tipsContainer');
+
+    function showTip(message, type = "warning") {
+      const box = document.createElement("div");
+      box.className = type === "recommendation" ? "recommendation" : "warning";
+      box.textContent = message;
+      tipsContainer.appendChild(box);
+    }
+
+    form.addEventListener('input', () => {
+      tipsContainer.innerHTML = "";
+
+      const budget = parseFloat(form.budget.value) || 0;
+      const duration = parseFloat(form.duration.value) || 0;
+      const adsets = parseInt(form.adsets.value) || 0;
+      const adsPerSet = parseInt(form.adsPerSet.value) || 0;
+      const audience = parseInt(form.audience.value) || 1;
+
+      const goalOption = form.goal.options[form.goal.selectedIndex];
+      const cpm = parseFloat(goalOption.value) || 1;
+      const ctr = parseFloat(goalOption.dataset.ctr) || 0.01;
+
+      const totalAds = adsets * adsPerSet;
+      const dailyBudget = duration > 0 ? (budget / duration) : 0;
+      const budgetPerAd = totalAds > 0 ? (dailyBudget / totalAds) : 0;
+      const impressions = cpm > 0 ? Math.floor((budget / cpm) * 1000) : 0;
+      const avgRepetition = impressions > 0 ? (impressions / audience) : 0;
+      const dailyImpressions = (dailyBudget / cpm) * 1000;
+      const dailyRepetition = audience > 0 ? (dailyImpressions / audience) : 0;
+      const estimatedTraffic = Math.floor(impressions * ctr);
+
+      totalBudgetEl.textContent = budget.toFixed(2) + " €";
+      dailyBudgetEl.textContent = dailyBudget.toFixed(2) + " €";
+      budgetPerAdEl.textContent = budgetPerAd.toFixed(2) + " €";
+      impressionsEl.textContent = impressions.toLocaleString();
+      avgRepetitionEl.textContent = avgRepetition.toFixed(2);
+      dailyRepetitionEl.textContent = dailyRepetition.toFixed(2);
+      estimatedTrafficEl.textContent = estimatedTraffic.toLocaleString();
+
+      // Warnings
+      if (budgetPerAd < 10 && budgetPerAd > 0) {
+        showTip("⚠️ Your daily budget per ad is below 10€. Consider removing ads or reducing granularity to ensure each creative gets enough delivery.");
+      }
+
+      if (avgRepetition > 180) {
+        showTip("⚠️ Your audience might see the same ad too many times. Consider increasing your audience size or refreshing creatives.");
+      }
+
+      if (avgRepetition < 30) {
+        showTip("⚠️ Your ads may not be seen enough times to make an impact. Consider increasing budget or reducing audience size.");
+      }
+
+      if (dailyRepetition < 1 && dailyRepetition > 0) {
+        showTip("⚠️ Your daily repetition is below 1. Your audience may not see your ads often enough each day to remember them.");
+      }
+
+      if (totalAds > 20) {
+        showTip("⚠️ You have a high number of ads. Consider starting with fewer creatives and scaling only the best performers.");
+      }
+
+      if (duration < 21 && duration > 0) {
+        showTip("⚠️ Short campaigns may not give enough time for learning and optimization. Consider running for at least 3 weeks.");
+      }
+
+      if (budget < 500 && budget > 0) {
+        showTip("⚠️ Your total budget is quite low. Consider focusing on fewer ads or a smaller audience to maximize impact.");
+      }
+
+      if (impressions < 100000 && impressions > 0) {
+        showTip("⚠️ Your estimated impressions are low. Consider increasing budget or choosing a lower CPM goal.");
+      }
+
+      // Recommendations
+      if (budgetPerAd >= 10) {
+        showTip("💡 Your daily budget per ad is healthy. Consider testing different creative formats to find what performs best.", "recommendation");
+      }
+
+      if (avgRepetition >= 60 && avgRepetition <= 170) {
+        showTip("💡 Your average repetition is in a good range for brand recall and conversion potential.", "recommendation");
+      }
+
+      if (impressions > 500000) {
+        showTip("💡 You're reaching a large audience. Consider segmenting your audience to tailor messages more effectively.", "recommendation");
+      }
+
+      if (totalAds <= 5 && totalAds > 0) {
+        showTip("💡 Starting with fewer creatives is a good strategy. Monitor performance and scale only the best ones.", "recommendation");
+      }
+
+      if (duration >= 14) {
+        showTip("💡 Longer campaigns allow for better learning and optimization. Refresh creatives if performance drops.", "recommendation");
+      }
+
+      if (dailyRepetition >= 1 && dailyRepetition <= 3) {
+        showTip("💡 Your audience is seeing your ads consistently each day. This can help drive engagement and conversions.", "recommendation");
+      }
+    });
+  </script>
+  </div>
+</body>
+</html>
